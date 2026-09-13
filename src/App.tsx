@@ -1,120 +1,118 @@
-import React, { useState } from 'react';
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { TrustStrip } from './components/TrustStrip';
-import { Solutions } from './components/Solutions';
-import { FeatureImageSection } from './components/FeatureImageSection';
-import { CareerLoopSignature } from './components/CareerLoopSignature';
-import { DashboardShowcase } from './components/DashboardShowcase';
-import { StudentJourney } from './components/StudentJourney';
-import { InstitutionSection } from './components/InstitutionSection';
-import { Testimonials } from './components/Testimonials';
-import { ResourcesSection } from './components/ResourcesSection';
-import { FinalCTA } from './components/FinalCTA';
-import { Footer } from './components/Footer';
-import { QuickAssessmentModal } from './components/modals/QuickAssessmentModal';
-import { CareerPathModal } from './components/modals/CareerPathModal';
-import { SignInModal } from './components/modals/SignInModal';
-import { ContactModal } from './components/modals/ContactModal';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { Navbar } from './components/layout/Navbar';
+import { Footer } from './components/layout/Footer';
+import { LoadingScreen } from './components/layout/LoadingScreen';
 
-export function App() {
-  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
-  const [isCareerPathOpen, setIsCareerPathOpen] = useState(false);
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const [isContactOpen, setIsContactOpen] = useState(false);
+// Pages
+import { HomePage } from './pages/HomePage';
+import { JobsPage } from './pages/JobsPage';
+import { JobDetailsPage } from './pages/JobDetailsPage';
+import { InternshipsPage } from './pages/InternshipsPage';
+import { InternshipDetailsPage } from './pages/InternshipDetailsPage';
+import { CompaniesPage } from './pages/CompaniesPage';
 
+// Dedicated Auth Pages (PRD #13, #14, #15)
+import { CandidateLoginPage } from './pages/CandidateLoginPage';
+import { CandidateRegisterPage } from './pages/CandidateRegisterPage';
+import { RecruiterLoginPage } from './pages/RecruiterLoginPage';
+import { RecruiterRegisterPage } from './pages/RecruiterRegisterPage';
+
+// Candidate Dashboard & Profile (PRD #22, #23, #24)
+import { CandidateDashboardPage } from './pages/CandidateDashboardPage';
+import { CandidateProfilePage } from './pages/CandidateProfilePage';
+import { CandidateApplicationsPage } from './pages/CandidateApplicationsPage';
+
+// Recruiter Dashboard & Requisitions (PRD #28, #29, #30)
+import { RecruiterDashboardPage } from './pages/RecruiterDashboardPage';
+import { RecruiterJobsPage } from './pages/RecruiterJobsPage';
+import { RecruiterApplicantsPage } from './pages/RecruiterApplicantsPage';
+import { PostJobPage } from './pages/PostJobPage';
+
+// Admin Portal
+import { AdminPortalPage } from './pages/AdminPortalPage';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shell Layout — Navbar + Outlet + Footer + Loading Screen
+// ─────────────────────────────────────────────────────────────────────────────
+function Shell() {
   return (
-    <div className="min-h-screen bg-background text-charcoal-900 selection:bg-brand-100 selection:text-brand-900 font-sans">
-      {/* Top Floating Glass Navbar */}
-      <Navbar
-        onOpenAssessment={() => setIsAssessmentOpen(true)}
-        onOpenSignIn={() => setIsSignInOpen(true)}
-        onOpenCareerPaths={() => setIsCareerPathOpen(true)}
-      />
+    <div className="min-h-screen bg-[#FAF9F6] text-charcoal-900 selection:bg-loop-indigo/20 selection:text-loop-indigo font-sans flex flex-col justify-between">
+      {/* 1s minimal infinity logo loading intro on page load (PRD #40) */}
+      <LoadingScreen />
 
-      {/* Main Page Sections */}
-      <main>
-        {/* 1. Hero Section: Editorial typography + SaaS Dashboard + Editorial Photo */}
-        <Hero
-          onOpenAssessment={() => setIsAssessmentOpen(true)}
-          onOpenCareerPaths={() => setIsCareerPathOpen(true)}
-        />
+      <Navbar />
 
-        {/* 2. Trust / Value Strip */}
-        <TrustStrip />
-
-        {/* 3. Solutions Section (4 Distinct Cards with UI Snippets) */}
-        <Solutions
-          onOpenAssessment={() => setIsAssessmentOpen(true)}
-          onOpenCareerPaths={() => setIsCareerPathOpen(true)}
-        />
-
-        {/* 4. Large Editorial Feature Image with Floating Roadmap Step Overlay */}
-        <FeatureImageSection
-          onOpenAssessment={() => setIsAssessmentOpen(true)}
-        />
-
-        {/* 5. Signature "Career Loop" Section (Circular Animated Continuous Pathway) */}
-        <CareerLoopSignature />
-
-        {/* 6. Dashboard Showcase (Full Interactive Student SaaS Command Center) */}
-        <DashboardShowcase
-          onOpenAssessment={() => setIsAssessmentOpen(true)}
-        />
-
-        {/* 7. Student Experience (01 to 06 Interactive Phases) */}
-        <StudentJourney
-          onOpenAssessment={() => setIsAssessmentOpen(true)}
-        />
-
-        {/* 8. Institution Section & Enterprise B2B Analytics Preview */}
-        <InstitutionSection />
-
-        {/* 9. Testimonials (Editorial Stories & Verified Placements) */}
-        <Testimonials />
-
-        {/* 10. Resources Section (Magazine-Grade Articles & Strategy Guides) */}
-        <ResourcesSection />
-
-        {/* 11. Final High-Contrast SaaS CTA */}
-        <FinalCTA
-          onOpenAssessment={() => setIsAssessmentOpen(true)}
-          onOpenContact={() => setIsContactOpen(true)}
-        />
+      <main className="flex-1">
+        <Outlet />
       </main>
 
-      {/* Footer */}
-      <Footer
-        onOpenAssessment={() => setIsAssessmentOpen(true)}
-        onOpenCareerPaths={() => setIsCareerPathOpen(true)}
-      />
-
-      {/* Interactive Presentation Modals */}
-      <QuickAssessmentModal
-        isOpen={isAssessmentOpen}
-        onClose={() => setIsAssessmentOpen(false)}
-      />
-
-      <CareerPathModal
-        isOpen={isCareerPathOpen}
-        onClose={() => setIsCareerPathOpen(false)}
-        onSelectPath={(pathId) => {
-          // Can scroll to dashboard showcase
-          const el = document.getElementById('dashboard-showcase');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-      />
-
-      <SignInModal
-        isOpen={isSignInOpen}
-        onClose={() => setIsSignInOpen(false)}
-      />
-
-      <ContactModal
-        isOpen={isContactOpen}
-        onClose={() => setIsContactOpen(false)}
-      />
+      <Footer />
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// App Router
+// ─────────────────────────────────────────────────────────────────────────────
+export function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Shell />}>
+          
+          {/* Public Marketplace */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/jobs/:id" element={<JobDetailsPage />} />
+          <Route path="/internships" element={<InternshipsPage />} />
+          <Route path="/internships/:id" element={<InternshipDetailsPage />} />
+          <Route path="/companies" element={<CompaniesPage />} />
+
+          {/* Dedicated Candidate Routes (PRD #13, #14, #22, #23, #24) */}
+          <Route path="/candidate/login" element={<CandidateLoginPage />} />
+          <Route path="/candidate/register" element={<CandidateRegisterPage />} />
+          <Route path="/candidate/dashboard" element={<CandidateDashboardPage />} />
+          <Route path="/candidate/profile" element={<CandidateProfilePage />} />
+          <Route path="/candidate/applications" element={<CandidateApplicationsPage />} />
+
+          {/* Dedicated Recruiter Routes (PRD #13, #15, #28, #29, #30) */}
+          <Route path="/recruiter/login" element={<RecruiterLoginPage />} />
+          <Route path="/recruiter/register" element={<RecruiterRegisterPage />} />
+          <Route path="/recruiter/dashboard" element={<RecruiterDashboardPage />} />
+          <Route path="/recruiter/jobs" element={<RecruiterJobsPage />} />
+          <Route path="/recruiter/jobs/new" element={<PostJobPage />} />
+          <Route path="/recruiter/applicants" element={<RecruiterApplicantsPage />} />
+
+          {/* Admin Governance */}
+          <Route path="/admin" element={<AdminPortalPage />} />
+
+          {/* Aliases & Fallbacks */}
+          <Route path="/login" element={<Navigate to="/candidate/login" replace />} />
+          <Route path="/register" element={<Navigate to="/candidate/register" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/candidate/dashboard" replace />} />
+
+          {/* 404 Not Found */}
+          <Route
+            path="*"
+            element={
+              <div className="pt-40 pb-28 text-center px-4">
+                <h1 className="font-display text-7xl font-black text-charcoal-900 mb-3">404</h1>
+                <p className="text-sm sm:text-base text-charcoal-500 mb-8 max-w-md mx-auto">
+                  The page you're looking for doesn't exist in the Loop. Let's get you back to active opportunities.
+                </p>
+                <a
+                  href="/"
+                  className="inline-flex items-center px-6 py-3.5 bg-charcoal-900 hover:bg-black text-white text-xs font-bold rounded-full transition-colors shadow-md"
+                >
+                  Return to Home
+                </a>
+              </div>
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
